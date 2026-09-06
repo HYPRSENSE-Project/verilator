@@ -590,7 +590,7 @@ target_compile_definitions(
     PRIVATE
         YYDEBUG # Required to get nice error messages
         $<$<CONFIG:DEBUG>:VL_DEBUG>
-                $<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG>
+        $<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG>
 )
 
 target_include_directories(
@@ -634,7 +634,10 @@ if(ENABLE_VHDL_FRONTEND)
     FetchContent_MakeAvailable(vhdl_fe)
     target_sources(${verilator} PRIVATE VHParse.cpp)
     target_compile_definitions(${verilator} PRIVATE WITH_VHDL_FE)
-    target_link_libraries(${verilator} PRIVATE vhdl_fe::parser vhdl_fe::elaboration)
+    target_link_libraries(
+        ${verilator}
+        PRIVATE vhdl_fe::parser vhdl_fe::elaboration
+    )
 endif()
 
 install(TARGETS ${verilator})

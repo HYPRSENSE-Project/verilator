@@ -83,7 +83,6 @@ static bool suffixed(const string& sw, const char* arg) {
     return (0 == strcasecmp(sw.c_str() + sw.length() - arg_len, arg));
 }
 
-
 void V3Global::readFiles() {
     // NODE STATE
     //   AstNode::user4p()      // VSymEnt*    Package and typedef symbol names
@@ -133,14 +132,15 @@ void V3Global::readFiles() {
                                         : filelib.libname();
 #ifdef WITH_VHDL_FE
             auto filename = filelib.filename();
-            if(suffixed(filename, ".vhd" ) || suffixed(filename, ".vhd" )){
-                vh_parser.parseFile(new FileLine{FileLine::commandLineFilename()}, filelib.filename(),
-                                false, false, libname, "Cannot find file containing module: ");
-            } else 
+            if (suffixed(filename, ".vhd") || suffixed(filename, ".vhd")) {
+                vh_parser.parseFile(new FileLine{FileLine::commandLineFilename()},
+                                    filelib.filename(), false, false, libname,
+                                    "Cannot find file containing module: ");
+            } else
 #endif
             {
                 parser.parseFile(new FileLine{FileLine::commandLineFilename()}, filelib.filename(),
-                                false, false, libname, "Cannot find file containing module: ");
+                                 false, false, libname, "Cannot find file containing module: ");
             }
         }
 
