@@ -29,6 +29,9 @@
 #include "V3PreShell.h"
 #include "V3Stats.h"
 #include "V3ThreadPool.h"
+#ifdef WITH_VHDL_FE
+#include "VHParse.h"
+#endif
 
 VL_DEFINE_DEBUG_FUNCTIONS;
 
@@ -74,6 +77,13 @@ void V3Global::vlExit(int status) {
 
 void V3Global::checkTree() const { rootp()->checkTree(); }
 
+static bool suffixed(const string& sw, const char* arg) {
+    auto arg_len = std::strlen(arg);
+    if (arg_len > sw.length()) return false;
+    return (0 == strcasecmp(sw.c_str() + sw.length() - arg_len, arg));
+}
+
+
 void V3Global::readFiles() {
     // NODE STATE
     //   AstNode::user4p()      // VSymEnt*    Package and typedef symbol names
@@ -83,7 +93,9 @@ void V3Global::readFiles() {
 
     {
         V3Parse parser{v3Global.rootp(), &filter};
-
+#ifdef WITH_VHDL_FE
+        VHParse vh_parser{v3Global.rootp(), &filter};
+#endif
         // Parse the std waivers
         if (v3Global.opt.stdWaiver()) {
             parser.parseFile(
@@ -119,8 +131,17 @@ void V3Global::readFiles() {
             const string& libname = filelib.libname() == "work"
                                         ? v3Global.libMapp()->matchMapping(filelib.filename())
                                         : filelib.libname();
-            parser.parseFile(new FileLine{FileLine::commandLineFilename()}, filelib.filename(),
-                             false, false, libname, "Cannot find file containing module: ");
+#ifdef WITH_VHDL_FE
+            auto filename = filelib.filename();
+            if(suffixed(filename, ".vhd" ) || suffixed(filename, ".vhd" )){
+                vh_parser.parseFile(new FileLine{FileLine::commandLineFilename()}, filelib.filename(),
+                                false, false, libname, "Cannot find file containing module: ");
+            } else 
+#endif
+            {
+                parser.parseFile(new FileLine{FileLine::commandLineFilename()}, filelib.filename(),
+                                false, false, libname, "Cannot find file containing module: ");
+            }
         }
 
         // Read libraries

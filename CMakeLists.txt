@@ -31,6 +31,10 @@ option(
     "Builds both the debug and release binaries, overriding CMAKE_BUILD_TYPE. Not supported under MSBuild."
 )
 
+option(
+    ENABLE_VHDL_FRONTEND
+    "Includes the code to also parse and convert VHDL code"
+)
 find_package(Python3 COMPONENTS Interpreter)
 set(PYTHON3 ${Python3_EXECUTABLE})
 # See also CMake built-in; CMAKE_INSTALL_PREFIX is applied by the install command.

@@ -590,7 +590,7 @@ target_compile_definitions(
     PRIVATE
         YYDEBUG # Required to get nice error messages
         $<$<CONFIG:DEBUG>:VL_DEBUG>
-        $<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG>
+                $<$<CONFIG:DEBUG>:_GLIBCXX_DEBUG>
 )
 
 target_include_directories(
@@ -622,6 +622,19 @@ if(WIN32)
     target_compile_definitions(${verilator} PRIVATE YY_NO_UNISTD_H)
     target_include_directories(${verilator} PRIVATE ../platform/win32)
     target_link_libraries(${verilator} PRIVATE bcrypt psapi)
+endif()
+
+if(ENABLE_VHDL_FRONTEND)
+    include(FetchContent)
+    FetchContent_Declare(
+        vhdl_fe
+        GIT_REPOSITORY https://github.com/HYPRSENSE-Project/VHDL-Frontend.git
+        GIT_TAG main
+    )
+    FetchContent_MakeAvailable(vhdl_fe)
+    target_sources(${verilator} PRIVATE VHParse.cpp)
+    target_compile_definitions(${verilator} PRIVATE WITH_VHDL_FE)
+    target_link_libraries(${verilator} PRIVATE vhdl_fe::parser vhdl_fe::elaboration)
 endif()
 
 install(TARGETS ${verilator})
