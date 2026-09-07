@@ -77,11 +77,13 @@ void V3Global::vlExit(int status) {
 
 void V3Global::checkTree() const { rootp()->checkTree(); }
 
+#ifdef WITH_VHDL_FE
 static bool suffixed(const string& sw, const char* arg) {
     auto arg_len = std::strlen(arg);
     if (arg_len > sw.length()) return false;
     return (0 == strcasecmp(sw.c_str() + sw.length() - arg_len, arg));
 }
+#endif
 
 void V3Global::readFiles() {
     // NODE STATE
