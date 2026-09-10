@@ -16,22 +16,16 @@
 
 #include "VHParse.h"
 
-#include <algorithm>
-#include <array>
 #include <ast_helper.h>
 #include <ast_nodes.h>
 #include <elaborator.h>
 #include <filesystem>
 #include <parser.h>
 #include <validator.h>
-#include <variant>
 
 
-struct VHParseImp {
+struct VHParseImp final {
     VHParseImp(AstNetlist* rootp, VInFilter* filterp):rootp(rootp), filterp(filterp), elab(parser){
-        // for(auto i : std::array<std::string, 2>{"contrib/ieee/std_logic_1164.vhdl", "contrib/ieee/numeric_bit.vhdl"}) {
-        //     files.push_back(parser.parse_file(root_path / i, parser::encoding::UTF_8, "ieee"));
-        // }
     }
 
     ~VHParseImp(){
